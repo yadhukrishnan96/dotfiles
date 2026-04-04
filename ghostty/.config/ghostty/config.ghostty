@@ -1,0 +1,31 @@
+# ============================================================
+# YOUR EXISTING CONFIG (unchanged)
+# ============================================================
+
+window-decoration = none
+window-padding-x = 20
+window-padding-y = 20
+font-family = JetBrainsMono NL
+font-size = 13
+cursor-style = block
+background-opacity = 0.85
+background-blur = 20
+bold-is-bright = false
+theme = Gruvbox Material Dark
+#theme = Nord Wave
+#theme = Gruvbox Dark Hard
+
+
+# ============================================================
+# ADDITIONS
+# ============================================================
+
+unfocused-split-opacity = 0.7
+font-thicken = true
+mouse-hide-while-typing = true
+scrollback-limit = 50000
+minimum-contrast = 1.1
+shell-integration = detect
+shell-integration-features = cursor,sudo,title
+window-padding-balance = true
+window-padding-color = background
