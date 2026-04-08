@@ -39,6 +39,7 @@ bindkey -M viins 'jj' vi-cmd-mode
 export KEYTIMEOUT=10
 
 # 8. DEVOPS & TERMINAL ALIASES
+alias wf='cd ~/test-repo/.github/workflows'
 alias n='nvim'
 alias v='vim'
 alias r='ranger'
