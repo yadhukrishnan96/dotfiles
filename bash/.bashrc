@@ -20,7 +20,7 @@ alias nb='nvim ~/.bashrc'
 alias db='devbox'
 alias nc='nvim ~/.config/niri/config.kdl'
 alias sb='source ~/.bashrc'
-
+alias gc='nvim ~/.config/ghostty/config'
 alias gcp='f(){ git add -p && git commit -m "$1" && git push origin $(git branch --show-current); }; f'
 
 #set -o vi

@@ -1,15 +1,10 @@
 // //This config is in the KDL format: https://kdl.dev
-// "/" comments out the following node.
 // Check the wiki for a full description of the configuration:
 //ZZ https://yalter.github.io/niri/Configuration:-Introduction
 
 // Input device configuration.
 // Find the full list of options on the wiki:
 // https://yalter.github.io/niri/Configuration:-Input
-
-
-
-//hello from .conf
 
 
 // blur {}
@@ -23,7 +18,8 @@
 // }
 //
 
-spawn-at-startup "swaybg -i /home/yadhu/Pictures/forest_castle.png -m fill"
+spawn-at-startup "swaybg" "-i" "/home/yadhu/wallpapers/moregrey.png" "-m" "fill"
+
 
 debug {
     render-drm-device "/dev/dri/renderD128"
@@ -33,6 +29,8 @@ debug {
 prefer-no-csd
 
 input {
+
+
     mod-key "alt"
     keyboard {
         repeat-rate 35
@@ -52,8 +50,6 @@ input {
         numlock
     }
      
-
-
 
 
 
@@ -325,7 +321,7 @@ spawn-at-startup "waybar"
 
 hotkey-overlay {
     // Uncomment this line to disable the "Important Hotkeys" pop-up at startup.
-    // skip-at-startup
+     skip-at-startup
 }
 
 // Uncomment this line to ask the clients to omit their client-side decorations if possible.
@@ -409,7 +405,12 @@ binds {
 
     // Mod-Shift-/, which is usually the same as Mod-?,
     // shows a list of important hotkeys.
+
+
     Mod+Shift+Slash { show-hotkey-overlay; }
+
+   Mod+Ctrl+Slash { spawn "/home/yadhu/.config/scripts/wallpicker.sh"; } 
+
 
     // Suggested binds for running programs: terminal, app launcher, screen locker.
     Mod+Return hotkey-overlay-title="Open a Terminal: alacritty" { spawn "ghostty"; }
