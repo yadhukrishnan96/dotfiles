@@ -18,22 +18,25 @@ alias ls='ls --color=auto'
 alias ll='ls -alF'
 alias nb='nvim ~/.bashrc'
 alias db='devbox'
+alias nc='nvim ~/.config/niri/config.kdl'
+alias sb='source ~/.bashrc'
 
 alias gcp='f(){ git add -p && git commit -m "$1" && git push origin $(git branch --show-current); }; f'
 
 #set -o vi
 
-# 4. FZF SETTINGS
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+# --- FZF (Arch paths) ---
+[ -f /usr/share/fzf/key-bindings.bash ] && source /usr/share/fzf/key-bindings.bash
+[ -f /usr/share/fzf/completion.bash ] && source /usr/share/fzf/completion.bash
 
-# Override Ctrl+T to open in nvimecho $-
+# --- Override Ctrl+T to open file in nvim ---
 fzf-file-widget() {
   local file
   file=$(fzf)
-  if [[ -n "$file" ]]; then
-    nvim "$file"
-  fi
+  [[ -n "$file" ]] && nvim "$file"
 }
+
+bind -x '"\C-t": fzf-file-widget'
 
 ## STARSHP PROMPT
 eval "$(starship init bash --print-full-init)"

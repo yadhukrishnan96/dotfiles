@@ -39,6 +39,13 @@ input {
         // Enable numlock on startup, omitting this setting disables it.
         numlock
     }
+     
+
+
+
+
+
+
 
     // Next sections include libinput settings.
     // Omitting settings disables them, or leaves them at their default values.
@@ -139,7 +146,7 @@ output "eDP-1" {
 // https://yalter.github.io/niri/Configuration:-Layout
 layout {
     // Set gaps around windows in logical pixels.
-    gaps 8
+    gaps 20
 
     // When to center a column when changing focus, options are:
     // - "never", default behavior, focusing an off-screen column will keep at the left
