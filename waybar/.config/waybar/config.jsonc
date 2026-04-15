@@ -1,0 +1,31 @@
+{
+  "layer": "top",
+
+  "modules-left": ["niri/workspaces"],
+
+  // "modules-center": ["niri/window"],
+
+  "modules-right": ["temperature", "clock", "battery"],
+
+  "niri/window": {
+    "max-length": 50
+  },
+
+  "temperature": {
+    "hwmon-path": "/sys/class/hwmon/hwmon5/temp1_input",
+    "interval": 1,
+    "format": "{temperatureC}°C ",
+    "format-critical": "{temperatureC}°C ",
+    "critical-threshold": 80
+  },
+
+  "battery": {
+    "format": "{capacity}% {icon}",
+    "format-icons": ["", "", "", "", ""]
+  },
+
+  "clock": {
+    "format": "{:%H:%M}",
+    "format-alt": "{:%a, %d %b  %H:%M}"
+  }
+}
