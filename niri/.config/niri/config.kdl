@@ -7,16 +7,19 @@
 // https://yalter.github.io/niri/Configuration:-Input
 
 
-// blur {}
-//
-// window-rule {
-//     match app-id="ghostty"
-//
-//     background-effect {
-//         blur true
-//     }
-// }
-//
+
+window-rule {
+    match app-id="^foot$"
+
+    
+    geometry-corner-radius 8
+    
+    background-effect {
+        blur true
+         
+    }
+}
+
 
 spawn-at-startup "swaybg" "-i" "/home/yadhu/wallpapers/moregrey.png" "-m" "fill"
 

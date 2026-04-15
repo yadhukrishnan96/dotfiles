@@ -1,7 +1,5 @@
 require("config.lazy")
 
-hi from vim
-
 
 -- =========================
 -- BASIC SETTINGS
