@@ -1,4 +1,8 @@
 return {
+    {
+  "nvim-mini/mini.comment",
+  opts = {},
+},
   {
     "nvim-lualine/lualine.nvim",
     config = function()

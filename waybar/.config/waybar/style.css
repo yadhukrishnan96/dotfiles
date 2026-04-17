@@ -1,54 +1,24 @@
-/* =========================
-   IMPORT (later replace with wal.css)
-   ========================= */
- @import url("file:///home/yadhu/.config/waybar/wal.css"); 
+@define-color background #020704;
+@define-color foreground #EAD078;
+@define-color primary #0B2415;
+@define-color secondary #53493F;
+@define-color alert #215339;
 
+* {
+  font-family: JetBrainsMono Nerd Font;
+  font-size: 12px;
+}
 
-/* =========================
-   COLORS (temporary test)
-*/
-
-
-/* =========================
-   BAR
-   ========================= */
 window#waybar {
-    background: rgba(0, 0, 0, 0.6);
+  background: @background;
+  color: @foreground;
+  border-bottom: 2px solid @primary;
 }
 
-
-/* =========================
-   WORKSPACES (LEFT)
-   ========================= */
 #workspaces button {
-    color: @color7;
-    padding: 0 6px;
+  color: @foreground;
 }
 
-#workspaces button.focused {
-    color: @color4;
-    font-weight: 600;
-}
-
-#workspaces button:hover {
-    color: @color6;
-}
-
-
-/* =========================
-   RIGHT MODULES
-   ========================= */
 #clock {
-    color: @color6;
-    padding: 0 8px;
-}
-
-#battery {
-    color: @color2;
-    padding: 0 8px;
-}
-
-#temperature {
-    color: @color3;
-    padding: 0 8px;
+  color: @primary;
 }

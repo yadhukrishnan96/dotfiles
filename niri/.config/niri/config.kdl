@@ -12,10 +12,10 @@ window-rule {
     match app-id="^foot$"
 
     
-    geometry-corner-radius 8
+    geometry-corner-radius 0
     
     background-effect {
-        blur true
+        blur true 
          
     }
 }
@@ -110,9 +110,10 @@ input {
 // Remember to uncomment the node by removing "/-"!
 
 output "HDMI-A-1" {
-    mode "1920x1080"
-    scale 1
-    position x=0 y=0
+                        
+mode "1920x1080@75.001"
+scale 1
+position x=0 y=0
 
 }
 
@@ -122,9 +123,8 @@ output "HDMI-A-1" {
 
 
 output "eDP-1" {
-    // Uncomment this line to disable this output.
-     off
-
+  //    Uncomment this line to disable this output.
+    off
     // Resolution and, optionally, refresh rate of the output.
     // The format is "<width>x<height>" or "<width>x<height>@<refresh rate>".
     // If the refresh rate is omitted, niri will pick the highest refresh rate
@@ -205,7 +205,7 @@ layout {
         // off
 
         // How many logical pixels the ring extends out from the windows.
-        width 2
+        width 0
 
         // Colors can be set in a variety of ways:
         // - CSS named colors: "red"
@@ -243,9 +243,9 @@ layout {
     border {
         // The settings are the same as for the focus ring.
         // If you enable the border, you probably want to disable the focus ring.
-        off
+        on
 
-        width 4
+        width 1
         active-color "#ffc87f"
         inactive-color "#505050"
 
@@ -347,7 +347,7 @@ screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 // https://yalter.github.io/niri/Configuration:-Animations
 animations {
     // Uncomment to turn off all animations.
-    // off
+     off
 
     // Slow down all animations by this factor. Values below 1 speed them up instead.
     // slowdown 3.0
@@ -416,9 +416,12 @@ binds {
 
 
     // Suggested binds for running programs: terminal, app launcher, screen locker.
-    Mod+Return hotkey-overlay-title="Open a Terminal: alacritty" { spawn "ghostty"; }
+    Mod+Return hotkey-overlay-title="Open a Terminal: alacritty" { spawn "foot"; }
     Mod+Space hotkey-overlay-title="Run an Application: fuzzel" { spawn "fuzzel"; }
     Super+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
+
+
+
 
     // Use spawn-sh to run a shell command. Do this if you need pipes, multiple commands, etc.
     // Note: the entire command goes as a single argument. It's passed verbatim to `sh -c`.

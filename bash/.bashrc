@@ -1,17 +1,28 @@
 # 1. PATH AND EDITOR
 export PATH="/usr/local/go/bin:$HOME/.local/bin:$HOME/.fzf/bin:$PATH"
 export EDITOR='nvim'
+# Enable Emacs keybindings explicitly
+bind -m emacs
+# Bind Ctrl+K to kill-line manually if inputrc isn't working
+bind '"\C-k":kill-line'
 
 # 2. LOAD EXTERNAL ENVS
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 
+
+echo 'export QTWEBENGINE_FORCE_USE_GBM=1' >> ~/.bashrc
+echo 'export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"' >> ~/.bashrc
+
+
 # 3. ALIASES
+alias ym='mpv " "'
 alias n='nvim'
 alias v='vim'
 alias r='ranger'
 alias d='docker'
+alias p='podman'
 alias book='bookokrat'
 alias nf='nvim $(fzf)'
 alias ls='ls --color=auto'
@@ -22,6 +33,9 @@ alias nc='nvim ~/.config/niri/config.kdl'
 alias sb='source ~/.bashrc'
 alias gc='nvim ~/.config/ghostty/config'
 alias gcp='f(){ git add -p && git commit -m "$1" && git push origin $(git branch --show-current); }; f'
+
+alias gp='git add . && git commit -m "update" && git push'
+
 
 #set -o vi
 
@@ -136,3 +150,46 @@ export PS1
 
 #########
 # THE ENDZ=
+
+# Added by LM Studio CLI (lms)
+export PATH="$PATH:/home/yadhu/.lmstudio/bin"
+# End of LM Studio CLI section
+
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
