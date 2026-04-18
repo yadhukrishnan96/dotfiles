@@ -1,10 +1,61 @@
-@define-color background #1a1a1a;
-@define-color foreground #eaeaea;
+/* ---- Nord Minimal Palette ---- */
+@define-color background rgba(46, 52, 64, 0.9);
+@define-color background-alt #3B4252;
+@define-color foreground #D8DEE9;
 
-@define-color color1 #ff5555;
-@define-color color2 #50fa7b;
-@define-color color3 #f1fa8c;
-@define-color color4 #bd93f9;
-@define-color color5 #ff79c6;
-@define-color color6 #8be9fd;
-@define-color color7 #bbbbbb;
+@define-color accent #88C0D0;
+@define-color warning #EBCB8B;
+@define-color critical #BF616A;
+
+/* ---- Global ---- */
+
+* {
+  border: none;
+  border-radius: 0;
+  font-family: "JetBrainsMono Nerd Font";
+  font-size: 12px;
+  min-height: 0;
+  }
+
+/* ---- Bar ---- */
+window#waybar {
+background: @background;
+color: @foreground;
+}
+
+/* ---- Workspaces ---- */
+#workspaces {
+margin-left: 6px;
+}
+
+#workspaces button {
+padding: 0 8px;
+color: @foreground;
+background: transparent;
+}
+
+#workspaces button.active {
+color: @accent;
+}
+
+#workspaces button:hover {
+background: @background-alt;
+}
+
+/* ---- Modules ---- */
+#clock,
+#battery {
+padding: 0 12px;
+margin: 0 4px;
+color: @foreground;
+}
+
+/* ---- Battery States ---- */
+#battery.warning {
+color: @warning;
+}
+
+#battery.critical {
+color: @critical;
+}
+

@@ -1,31 +1,26 @@
 {
-  "layer": "top",
+"layer": "top",
+"position": "top",
 
-  "modules-left": ["niri/workspaces"],
+"modules-left": ["niri/workspaces"],
+"modules-right": ["clock", "battery"],
 
-  // "modules-center": ["niri/window"],
+"niri/workspaces": {
+"format": "{name}",
+"disable-scroll": true
+},
 
-  "modules-right": ["temperature", "clock", "battery"],
+"clock": {
+"format": "{:%H:%M}",
+"tooltip-format": "{:%A, %d %B %Y}"
+},
 
-  "niri/window": {
-    "max-length": 50
-  },
-
-  "temperature": {
-    "hwmon-path": "/sys/class/hwmon/hwmon5/temp1_input",
-    "interval": 1,
-    "format": "{temperatureC}°C ",
-    "format-critical": "{temperatureC}°C ",
-    "critical-threshold": 80
-  },
-
-  "battery": {
-    "format": "{capacity}% {icon}",
-    "format-icons": ["", "", "", "", ""]
-  },
-
-  "clock": {
-    "format": "{:%H:%M}",
-    "format-alt": "{:%a, %d %b  %H:%M}"
-  }
+"battery": {
+"format": "{capacity}%",
+"states": {
+"warning": 30,
+"critical": 15
 }
+}
+}
+

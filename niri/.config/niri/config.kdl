@@ -21,7 +21,7 @@ window-rule {
 }
 
 
-spawn-at-startup "swaybg" "-i" "/home/yadhu/wallpapers/moregrey.png" "-m" "fill"
+spawn-at-startup "swaybg" "-i" "/home/yadhu/wallpapers/drive.jpg" "-m" "fill"
 
 
 debug {
@@ -112,7 +112,7 @@ input {
 output "HDMI-A-1" {
                         
 mode "1920x1080@75.001"
-scale 1
+scale 0.9
 position x=0 y=0
 
 }
@@ -246,7 +246,7 @@ layout {
         on
 
         width 1
-        active-color "#ffc87f"
+        active-color "ACADA7"
         inactive-color "#505050"
 
         // Color of the border around windows that request your attention.

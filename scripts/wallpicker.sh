@@ -20,10 +20,10 @@ pkill swaybg 2>/dev/null
 swaybg -i "$WALL" -m fill &
 
 # allow compositor to settle
-sleep 0.2
+sleep 0.5
 
 # generate theme
-wallust run "$WALL"
+wallust run "$WALL" & disown
 
 # -------------------------
 # WAYBAR SYNC (IMPORTANT)

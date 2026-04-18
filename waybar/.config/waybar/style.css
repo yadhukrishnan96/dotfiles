@@ -1,8 +1,8 @@
-@define-color background #020704;
-@define-color foreground #EAD078;
-@define-color primary #0B2415;
-@define-color secondary #53493F;
-@define-color alert #215339;
+@define-color background #000000;
+@define-color foreground #8A8DAE;
+@define-color primary #AC2E31;
+@define-color secondary #31AC61;
+@define-color alert #AC4300;
 
 * {
   font-family: JetBrainsMono Nerd Font;
