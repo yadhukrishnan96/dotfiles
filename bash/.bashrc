@@ -1,3 +1,28 @@
+export PATH="/usr/bin:$PATH"
+
+
+# printf '\ec' 
+    # in case terminal colors break due to auto theme 
+
+
+##Podman couldt connect to systemd as d-bus was pointing to wrong path
+export XDG_RUNTIME_DIR="/run/user/$(id -u)"
+# Point the D-Bus to the official Systemd User Bus
+if [ -S "$XDG_RUNTIME_DIR/bus" ]; then
+    export DBUS_SESSION_BUS_ADDRESS="unix:path=$XDG_RUNTIME_DIR/bus"
+fi
+
+
+
+## Podman command completeion 
+if [[ -r /usr/share/bash-completion/bash_completion ]]; then
+  . /usr/share/bash-completion/bash_completion
+fi
+
+
+
+
+
 # 1. PATH AND EDITOR
 export PATH="/usr/local/go/bin:$HOME/.local/bin:$HOME/.fzf/bin:$PATH"
 export EDITOR='nvim'
@@ -16,10 +41,17 @@ echo 'export QTWEBENGINE_FORCE_USE_GBM=1' >> ~/.bashrc
 echo 'export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"' >> ~/.bashrc
 
 
+
+
+
+
+
+
+
+
 # 3. ALIASES
 
-
-
+alias stl='sudo systemctl'
 alias lsd='lsd -l'
 alias ym='mpv " "'
 alias n='nvim'
@@ -40,12 +72,15 @@ alias gcp='f(){ git add -p && git commit -m "$1" && git push origin $(git branch
 alias wc='cd ~/dotfiles/scripts/ && ./wallpicker.sh'
 alias gp='git add . && git commit -m "update" && git push'
 alias pw='pywal'
+alias kubectl='/usr/bin/kubectl'
+
+complete -F _podman p
 
 #set -o vi
 
 # --- FZF (Arch paths) ---
 [ -f /usr/share/fzf/key-bindings.bash ] && source /usr/share/fzf/key-bindings.bash
-[ -f /usr/share/fzf/completion.bash ] && source /usr/share/fzf/completion.bash
+#[ -f /usr/share/fzf/completion.bash ] && source /usr/share/fzf/completion.bash
 
 # --- Override Ctrl+T to open file in nvim ---
 fzf-file-widget() {
@@ -60,123 +95,439 @@ bind -x '"\C-t": fzf-file-widget'
 eval "$(starship init bash --print-full-init)"
 
 
-[ -f ~/.cache/wallust/sequences ] && cat ~/.cache/wallust/sequences
-[ -f ~/.cache/wallust/colors.sh ] && source ~/.cache/wallust/colors.sh
+#[ -f ~/.cache/wallust/sequences ] && cat ~/.cache/wallust/sequences
+#[ -f ~/.cache/wallust/colors.sh ] && source ~/.cache/wallust/colors.sh
 
 
 
+source "$HOME/.cache/wal/colors.sh"
+
+hex_to_rgb() {
+  printf "%d;%d;%d" 0x${1:1:2} 0x${1:3:2} 0x${1:5:2}
+}
+
+c1=$(hex_to_rgb "$color1")
+
+PS1="\[$(tput setaf 7)\]\u@\h \[$(tput setaf 3)\]\w\n\[$(tput setaf 1)\]❯\[$(tput sgr0)\] "
 
 
 pywal() {
-    local img=$(find "${1:-$HOME/wallpapers}" -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.webp" \) | fzf --preview 'chafa --size=${FZF_PREVIEW_COLUMNS}x${FZF_PREVIEW_LINES} {}' --preview-window=right:60%)
+    local img
+
+    img=$(find "${1:-$HOME/wallpapers}" -type f \
+        \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.webp" \) \
+        | fzf --preview 'chafa --size=${FZF_PREVIEW_COLUMNS}x${FZF_PREVIEW_LINES} {}' \
+              --preview-window=right:60%)
+
     [[ -z "$img" ]] && return
-    wal -i "$img" --backend haishoku
-    pkill swaybg; swaybg -i "$img" -m fill &
+
+    echo "[INFO] Selected: $img"
+
+    # 🔹 Step 1: Generate colors
+    if ! wal -i "$img" --backend colorz; then
+        echo "[ERROR] wal failed"
+        return
+    fi
+
+    # 🔹 Step 2: Apply wal colors to current terminal (optional but recommended)
+    [ -f ~/.cache/wal/colors.sh ] && source ~/.cache/wal/colors.sh
+
+    # 🔹 Step 3: Ensure awww daemon is running
+    if ! pgrep -x awww-daemon >/dev/null; then
+        echo "[INFO] Starting awww-daemon..."
+        awww-daemon >/dev/null 2>&1 &
+        sleep 0.5
+    fi
+
+    # 🔹 Step 4: Apply wallpaper with transition
+    awww img "$img" \
+        --transition-type center \
+        --transition-step 10 \
+        --transition-fps 60
+
+    echo "[SUCCESS] Theme + wallpaper applied"
 }
 
 
 
 
-# Enable this for default working of bsle.sh
-# source -- ~/.local/share/blesh/ble.sh
 
-######################
-# ble.sh integration
-######################
-
-# Replace with whatever "~/path/ble.sh/out/ble.sh" you are using
-# if [ -f ~/ble.sh/out/ble.sh ]; then
-#   source ~/ble.sh/out/ble.sh --noattach
-#   ble-color-setface auto_complete fg=238,underline # Set autocomplete color to greyed out and underlined until activated
-#   ble-face -s syntax_error fg=242                  # Set error or backspace to greyed out
-#   bleopt complete_ambiguous=                       # Disable ambigous completion from generating
-# fi
-
-########################
-# Setting prompt colors
-########################
-
-# get_color() { tput setaf "$1"; }
-
-# Can be changed to whatever color number you want (0-15)
-# COL_USER="${color4:-$(get_color 12)}" # Yellow-ish
-# COL_HOST="${color6:-$(get_color 5)}"  # Blue-ish
-# COL_PATH="${color2:-$(get_color 11)}" # Cyan/Green-ish
-# COL_ROOT="${color1:-$(get_color 1)}"  # Red
-# COL_RESET="$(tput sgr0)"
-
-########################################
-# Two-line dynamic prompt (root vs user)
-########################################
-
-# Disable ble.sh prompt override:
-# bleopt prompt_ps1_final=
-# bleopt prompt_ps1_transient=
-
-# Customize to your liking
-# if [ "$EUID" -eq 0 ]; then
-#   PS1="┌──[\[${COL_ROOT}\]\u@${COL_HOST}\h\[${COL_RESET}\]]─[\[${COL_PATH}\]\w\[${COL_RESET}\]]\n└─\[${COL_PATH}\]# \[${COL_RESET}\]"
-# else
-#   PS1="┌──[\[${COL_USER}\]\u@${COL_HOST}\h\[${COL_RESET}\]]─[\[${COL_PATH}\]\w\[${COL_RESET}\]]\n└─\[${COL_PATH}\]\$ \[${COL_RESET}\]"
-# fi
-
-# Export the prompt
-export PS1
-
-##################
-# History settings
-##################
-
-# export HISTCONTROL=ignoreboth
-# export HISTSIZE=1000
-# export HISTFILESIZE=2000
-# shopt -s histappend
-#
-################
-# Shell behavior
-################
-
-# shopt -s checkwinsize
-# shopt -s nocaseglob
-
-########################################
-# Enable color support for core commands
-########################################
-
-# if [ -x /usr/bin/dircolors ]; then
-#   test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-#   export LS_COLORS="$LS_COLORS:ow=30;44:"
-#   alias ls='ls --color=auto'
-#   alias grep='grep --color=auto'
-#   alias egrep='egrep --color=auto'
-#   alias fgrep='fgrep --color=auto'
-# fi
-
-#################
-# Bash completion
-#################
-
-# if ! shopt -oq posix; then
-#   if [ -f /usr/share/bash-completion/bash_completion ]; then
-#     . /usr/share/bash-completion/bash_completion
-#   elif [ -f /etc/bash_completion ]; then
-#     . /etc/bash_completion
-#   fi
-# fi
-
-###############
-# Attach ble.sh
-###############
-
-#[[ ! ${BLE_VERSION-} ]] || ble-attach
-
-#########
-# THE ENDZ=
-
-# Added by LM Studio CLI (lms)
-export PATH="$PATH:/home/yadhu/.lmstudio/bin"
-# End of LM Studio CLI section
-
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
 export QTWEBENGINE_FORCE_USE_GBM=1
 export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
 export QTWEBENGINE_FORCE_USE_GBM=1
