@@ -38,6 +38,14 @@ vim.opt.updatetime = 300
 -- KEYBINDS
 -- =========================
 
+
+vim.keymap.set("n", "XX", ":qa!<CR>", {
+  noremap = true,
+  silent = true,
+  desc = "Force quit without saving"
+})
+
+
 -- Set leader key (space)
 vim.g.mapleader = " "
 
