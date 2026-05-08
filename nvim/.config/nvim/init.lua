@@ -1,5 +1,13 @@
 require("config.lazy")
 
+
+
+
+vim.diagnostic.config({
+  signs = false,
+})
+
+
 vim.opt.clipboard = "unnamedplus"
 -- =========================
 -- BASIC SETTINGS
@@ -78,3 +86,31 @@ vim.opt.swapfile = false
 -- =========================
 -- DONE
 -- =========================
+--
+
+vim.opt.termguicolors = true
+
+local function fade_hex(hex, factor)
+  hex = hex:gsub("#", "")
+  local r = tonumber(hex:sub(1,2), 16)
+  local g = tonumber(hex:sub(3,4), 16)
+  local b = tonumber(hex:sub(5,6), 16)
+
+  r = math.floor(r * factor)
+  g = math.floor(g * factor)
+  b = math.floor(b * factor)
+
+  return string.format("#%02x%02x%02x", r, g, b)
+end
+
+local function fade_highlights()
+  for _, group in ipairs(vim.fn.getcompletion("", "highlight")) do
+    local ok, hl = pcall(vim.api.nvim_get_hl, 0, { name = group })
+    if ok and hl.fg then
+      local faded = fade_hex(string.format("#%06x", hl.fg), 0.6)
+      vim.api.nvim_set_hl(0, group, vim.tbl_extend("force", hl, { fg = faded }))
+    end
+  end
+end
+
+fade_highlights()

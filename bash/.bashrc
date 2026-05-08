@@ -73,7 +73,8 @@ alias wc='cd ~/dotfiles/scripts/ && ./wallpicker.sh'
 alias gp='git add . && git commit -m "update" && git push'
 alias pw='pywal'
 alias kubectl='/usr/bin/kubectl'
-
+alias yt='cd yt-watcher && ls -lart'
+alias yta='cd yt-watcher/app && ls -lart'
 complete -F _podman p
 
 #set -o vi
@@ -152,6 +153,8 @@ pywal() {
 
 
 
+export QTWEBENGINE_FORCE_USE_GBM=1
+export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
 export QTWEBENGINE_FORCE_USE_GBM=1
 export QUTE_CHROMIUM_FLAGS="--use-angle=vulkan"
 export QTWEBENGINE_FORCE_USE_GBM=1

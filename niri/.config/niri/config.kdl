@@ -13,7 +13,9 @@ blur {
     noise 0.02
     saturation 1.5
 }
-environment
+
+
+
 
 window-rule {
     match app-id="kitty$"
@@ -49,7 +51,7 @@ prefer-no-csd
 
 input {    mod-key "alt"
     keyboard {
-        repeat-rate 35
+        repeat-rate 70
         repeat-delay 200
         xkb {
             options "ctrl:nocaps"
@@ -155,6 +157,10 @@ window-rule {
 }
 
 binds {
+
+     Ctrl+Shift+Z { spawn "copyq" "show"; }
+
+
    Ctrl+Mod+s { spawn "systemctl" "suspend"; }
 
     Mod+Shift+Slash { show-hotkey-overlay; }

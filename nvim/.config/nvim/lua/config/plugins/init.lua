@@ -1,21 +1,31 @@
 return {
-    {
-  "nvim-mini/mini.comment",
-  opts = {},
-},
   {
-    "nvim-lualine/lualine.nvim",
-    config = function()
-      require("lualine").setup()
-    end,
+    "nvim-mini/mini.comment",
+    opts = {},
   },
-
+  {
+    "lukas-reineke/indent-blankline.nvim",
+    main = "ibl",
+    opts = {
+      indent = {
+        char = "│",
+        tab_char = "│",
+      },
+      scope = {
+        enabled = true,
+        char = "│",
+        show_start = false,
+        show_end = false,
+      },
+      whitespace = {
+        remove_blankline_trail = false,
+      },
+    },
+  },
   {
     "nvim-telescope/telescope.nvim",
     version = "*",
-
     keys = {
-      -- 🔥 now searches ONLY ~/.config
       {
         "<leader>ff",
         function()
@@ -25,12 +35,9 @@ return {
         end,
         desc = "Find config files",
       },
-
       { "<leader>fg", "<cmd>Telescope live_grep<cr>", desc = "Grep text" },
       { "<leader>fb", "<cmd>Telescope buffers<cr>", desc = "Buffers" },
     },
-
-    -- optional: keep fd config minimal now
     opts = {
       pickers = {
         find_files = {
@@ -45,17 +52,9 @@ return {
         },
       },
     },
-
     dependencies = {
       "nvim-lua/plenary.nvim",
       { "nvim-telescope/telescope-fzf-native.nvim", build = "make" },
     },
   },
-
-  {
-    "lukas-reineke/indent-blankline.nvim",
-    main = "ibl",
-    opts = {},
-  },
-
 }
