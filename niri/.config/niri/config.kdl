@@ -60,8 +60,9 @@ input {    mod-key "alt"
     }
      
 touchpad {
-        tap
-        natural-scroll
+        tap 
+        natural-scroll 
+        dwt
     }
     mouse 
     trackpoint 
@@ -78,7 +79,7 @@ output "HDMI-A-1" {
 }
 
 output "eDP-1" {
-    off
+    //off
     mode "1920x1080@120.030"
     scale 1
     position x=1920 y=0
@@ -88,7 +89,7 @@ output "eDP-1" {
 
 
 layout {
-    gaps 15
+    gaps 5
 
     always-center-single-column
 
