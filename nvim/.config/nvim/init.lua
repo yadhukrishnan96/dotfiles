@@ -2,6 +2,55 @@ require("config.lazy")
 
 
 
+--for recovery -- 
+
+vim.opt.undofile = true
+
+
+--for mardown notes--
+vim.opt.conceallevel = 2
+
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldlevel = 99
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--paster behavior for pasting multiple lines
+vim.keymap.set("n", "p", function()
+  local text = vim.fn.getreg("+")
+
+  if text:find("\n") then
+    vim.cmd("put +")
+  else
+    vim.cmd('normal! "+p')
+  end
+end, { noremap = true, silent = true })
+
+
+
+
+--indentation 
+vim.keymap.set("v", "<", "<gv")
+vim.keymap.set("v", ">", ">gv")
+
+
 
 vim.diagnostic.config({
   signs = false,
@@ -90,27 +139,27 @@ vim.opt.swapfile = false
 
 vim.opt.termguicolors = true
 
-local function fade_hex(hex, factor)
-  hex = hex:gsub("#", "")
-  local r = tonumber(hex:sub(1,2), 16)
-  local g = tonumber(hex:sub(3,4), 16)
-  local b = tonumber(hex:sub(5,6), 16)
-
-  r = math.floor(r * factor)
-  g = math.floor(g * factor)
-  b = math.floor(b * factor)
-
-  return string.format("#%02x%02x%02x", r, g, b)
-end
-
-local function fade_highlights()
-  for _, group in ipairs(vim.fn.getcompletion("", "highlight")) do
-    local ok, hl = pcall(vim.api.nvim_get_hl, 0, { name = group })
-    if ok and hl.fg then
-      local faded = fade_hex(string.format("#%06x", hl.fg), 0.6)
-      vim.api.nvim_set_hl(0, group, vim.tbl_extend("force", hl, { fg = faded }))
-    end
-  end
-end
-
-fade_highlights()
+-- local function fade_hex(hex, factor)
+--   hex = hex:gsub("#", "")
+--   local r = tonumber(hex:sub(1,2), 16)
+--   local g = tonumber(hex:sub(3,4), 16)
+--   local b = tonumber(hex:sub(5,6), 16)
+--
+--   r = math.floor(r * factor)
+--   g = math.floor(g * factor)
+--   b = math.floor(b * factor)
+--
+--   return string.format("#%02x%02x%02x", r, g, b)
+-- end
+--
+-- local function fade_highlights()
+--   for _, group in ipairs(vim.fn.getcompletion("", "highlight")) do
+--     local ok, hl = pcall(vim.api.nvim_get_hl, 0, { name = group })
+--     if ok and hl.fg then
+--       local faded = fade_hex(string.format("#%06x", hl.fg), 0.6)
+--       vim.api.nvim_set_hl(0, group, vim.tbl_extend("force", hl, { fg = faded }))
+--     end
+--   end
+-- end
+--
+-- fade_highlights()

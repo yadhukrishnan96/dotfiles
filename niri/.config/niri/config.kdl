@@ -1,10 +1,12 @@
 
 
-overview {
-    zoom 0.40
-}
-
-
+// overview {
+//     zoom 0.35
+//
+//     workspace-shadow {
+//         off
+//     }
+// }
 
 
 blur {
@@ -15,10 +17,10 @@ blur {
 }
 
 
-
+ 
 
 window-rule {
-    match app-id="kitty$"
+    match app-id="^kitty$"
 
     background-effect {
         blur true
@@ -40,6 +42,21 @@ spawn-at-startup "awww-daemon"
 spawn-at-startup "awww" "img" "/home/yadhu/wallpapers/drive.jpg"
 
 //spawn-at-startup "swaybg" "-i" "/home/yadhu/wallpapers/drive.jpg" "-m" "fill"
+
+
+layer-rule {
+    match namespace="^awww-daemon$"
+    place-within-backdrop true
+}
+
+
+
+
+
+
+
+
+
 
 
 debug {
@@ -81,7 +98,7 @@ output "HDMI-A-1" {
 output "eDP-1" {
     //off
     mode "1920x1080@120.030"
-    scale 1
+    scale 1.4
     position x=1920 y=0
 }
 
@@ -90,8 +107,9 @@ output "eDP-1" {
 
 layout {
     gaps 5
+    background-color "transparent"
 
-    always-center-single-column
+   // always-center-single-column
 
     preset-column-widths {
        proportion 0.33333
@@ -99,6 +117,8 @@ layout {
         proportion 0.66667
 
    }
+
+   
    focus-ring {
        width 1
 
@@ -110,14 +130,16 @@ layout {
   
 
    struts {
-         left 5
-         right 5
-         top 5
-         bottom 5
+         // left 5
+         // right 5
+         // top 5
+         // bottom 5
     }
 }
 
 spawn-at-startup "sh" "-c" "for i in 1 2 3 4 5; do bluetoothctl connect F4:EE:25:62:D9:B5 && break; sleep 2; done"
+
+
 spawn-at-startup "waybar"
 
 
@@ -153,11 +175,33 @@ window-rule {
 }
 
 /-window-rule {
-    geometry-corner-radius 12
+    //geometry-corner-radius 12
     clip-to-geometry true
+
 }
 
+
+
+
+
+
 binds {
+
+
+
+
+    Mod+Shift+1 hotkey-overlay-title="Turn on/off eDP-1" {spawn-sh "niri msg outputs | grep -n2 eDP | grep -q Disabled && { echo off; niri msg output eDP-1 on; } || { echo on; niri msg output eDP-1 off; }";}
+
+
+
+
+
+
+
+
+
+
+
 
      Ctrl+Shift+Z { spawn "copyq" "show"; }
 
@@ -251,10 +295,10 @@ binds {
     // Mod+Shift+K     { focus-monitor-up; }
     // Mod+Shift+L     { focus-monitor-right; }
     //
-    // Mod+Shift+Ctrl+Left  { move-column-to-monitor-left; }
+     Mod+Shift+Ctrl+Left  { move-column-to-monitor-left; }
     // Mod+Shift+Ctrl+Down  { move-column-to-monitor-down; }
     // Mod+Shift+Ctrl+Up    { move-column-to-monitor-up; }
-    // Mod+Shift+Ctrl+Right { move-column-to-monitor-right; }
+     Mod+Shift+Ctrl+Right { move-column-to-monitor-right; }
     // Mod+Shift+Ctrl+H     { move-column-to-monitor-left; }
     // Mod+Shift+Ctrl+J     { move-column-to-monitor-down; }
     // Mod+Shift+Ctrl+K     { move-column-to-monitor-up; }
@@ -349,7 +393,61 @@ binds {
     // Mod+Ctrl+1 { move-window-to-workspace 1; }
 
     // Switches focus between the current and the previous workspace.
-    // Mod+Tab { focus-workspace-previous; }
+     Mod+A { focus-workspace-previous; }
+
+
+     Mod+Ctrl+Left  { focus-monitor-left; }
+    // Mod+Shift+Down  { focus-monitor-down; }
+    // Mod+Shift+Up    { focus-monitor-up; }
+     Mod+Ctrl+Right { focus-monitor-right; }
+    // Mod+Shift+H     { focus-monitor-left; }
+    // Mod+Shift+J     { focus-monitor-down; }
+    // Mod+Shift+K     { focus-monitor-up; }
+    // Mod+Shift+L     { focus-monitor-right; }
+    //
+    // Mod+Shift+Ctrl+Left  { move-column-to-monitor-left; }
+    // Mod+Shift+Ctrl+Down  { move-column-to-monitor-down; }
+    // Mod+Shift+Ctrl+Up    { move-column-to-monitor-up; }
+    // Mod+Shift+Ctrl+Right { move-column-to-monitor-right; }
+    // Mod+Shift+Ctrl+H     { move-column-to-monitor-left; }
+    // Mod+Shift+Ctrl+J     { move-column-to-monitor-down; }
+    // Mod+Shift+Ctrl+K     { move-column-to-monitor-up; }
+    // Mod+Shift+Ctrl+L     { move-column-to-monitor-right; }
+
+    // Alternatively, there are commands to move just a single window:
+    // Mod+Shift+Ctrl+Left  { move-window-to-monitor-left; }
+    // ...
+
+    // And you can also move a whole workspace to another monitor:
+    // Mod+Shift+Ctrl+Left  { move-workspace-to-monitor-left; }
+    // ...
+
+    // Mod+Shift+Left  { focus-monitor-left; }
+    // Mod+Shift+Down  { focus-monitor-down; }
+    // Mod+Shift+Up    { focus-monitor-up; }
+    // Mod+Shift+Right { focus-monitor-right; }
+    // Mod+Shift+H     { focus-monitor-left; }
+    // Mod+Shift+J     { focus-monitor-down; }
+    // Mod+Shift+K     { focus-monitor-up; }
+    // Mod+Shift+L     { focus-monitor-right; }
+    //
+    // Mod+Shift+Ctrl+Left  { move-column-to-monitor-left; }
+    // Mod+Shift+Ctrl+Down  { move-column-to-monitor-down; }
+    // Mod+Shift+Ctrl+Up    { move-column-to-monitor-up; }
+    // Mod+Shift+Ctrl+Right { move-column-to-monitor-right; }
+    // Mod+Shift+Ctrl+H     { move-column-to-monitor-left; }
+    // Mod+Shift+Ctrl+J     { move-column-to-monitor-down; }
+    // Mod+Shift+Ctrl+K     { move-column-to-monitor-up; }
+    // Mod+Shift+Ctrl+L     { move-column-to-monitor-right; }
+
+    // Alternatively, there are commands to move just a single window:
+    // Mod+Shift+Ctrl+Left  { move-window-to-monitor-left; }
+    // ...
+
+    // And you can also move a whole workspace to another monitor:
+    // Mod+Shift+Ctrl+Left  { move-workspace-to-monitor-left; }
+    // ...
+
 
     // The following binds move the focused window in and out of a column.
     // If the window is alone, they will consume it into the nearby column to the side.
