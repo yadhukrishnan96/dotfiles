@@ -1,11 +1,12 @@
 require("config.lazy")
 
+vim.opt.wrap = false
 
+vim.opt.inccommand = "split"
 
---for recovery -- 
+vim.opt.signcolumn = "yes"
 
-vim.opt.undofile = true
-
+vim.opt.cmdheight = 0
 
 --for mardown notes--
 vim.opt.conceallevel = 2
@@ -14,23 +15,22 @@ vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.opt.foldlevel = 99
 
+--Yank highlight--
 
+vim.api.nvim_create_autocmd("TextYankPost", {
+  desc = "Highlight when yanking text",
+  callback = function()
+    vim.highlight.on_yank({
+      higroup = "Visual",
+      timeout = 160,
+    })
+  end,
+})
 
+--move line up or down --
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
+vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
 
 --paster behavior for pasting multiple lines
 vim.keymap.set("n", "p", function()
@@ -44,11 +44,12 @@ vim.keymap.set("n", "p", function()
 end, { noremap = true, silent = true })
 
 
+--“paste without overwriting yank register--
 
 
 --indentation 
-vim.keymap.set("v", "<", "<gv")
-vim.keymap.set("v", ">", ">gv")
+vim.keymap.set("v", "<", "<gv^")
+vim.keymap.set("v", ">", ">gv^")
 
 
 
@@ -67,11 +68,10 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 
 -- Indentation
-vim.opt.tabstop = 4        -- tabs = 4 spaces
-vim.opt.shiftwidth = 4     -- autoindent size
+vim.opt.tabstop = 2        -- tabs = 4 spaces
+vim.opt.shiftwidth = 2     -- autoindent size
 vim.opt.expandtab = true   -- use spaces instead of tabs
 vim.opt.smartindent = true
-
 -- Cursor line highlight
 vim.opt.cursorline = true
 
@@ -118,6 +118,12 @@ vim.keymap.set("n", "<leader>q", ":q<CR>")
 -- Clear search highlight
 vim.keymap.set("n", "<leader>h", ":nohlsearch<CR>")
 
+
+--keep cursor at centre while ctrl d/u --
+
+vim.keymap.set("n", "<C-d>", "<C-d>zz")
+vim.keymap.set("n", "<C-u>", "<C-u>zz")
+
 -- =========================
 -- UI TWEAKS
 -- =========================
@@ -131,13 +137,14 @@ vim.opt.splitbelow = true
 
 -- Disable swapfile
 vim.opt.swapfile = false
+vim.opt.backup = false
 
+vim.opt.undofile = true
 -- =========================
 -- DONE
 -- =========================
 --
 
-vim.opt.termguicolors = true
 
 -- local function fade_hex(hex, factor)
 --   hex = hex:gsub("#", "")

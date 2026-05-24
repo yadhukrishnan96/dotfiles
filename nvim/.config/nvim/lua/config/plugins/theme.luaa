@@ -17,15 +17,15 @@
 
 
 
-return {
-  {
-    "LazyVim/LazyVim",
-    priority = 1000,
-    config = function()
-      vim.cmd.colorscheme("dosbox-black")
-    end,
-  },
-}
+-- return {
+--   {
+--     "LazyVim/LazyVim",
+--     priority = 1000,
+--     config = function()
+--       vim.cmd.colorscheme("dosbox-black")
+--     end,
+--   },
+-- }
 
 
 
