@@ -31,6 +31,10 @@ return {
             ".git",
           },
         },
+
+        colorscheme = {
+          enable_preview = true,
+        },
       },
     },
 

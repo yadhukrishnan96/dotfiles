@@ -1,21 +1,15 @@
+return {
+	{
+		"LazyVim/LazyVim",
+		opts = function(_, opts)
+			opts.colorscheme = "custom"
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+			vim.api.nvim_create_autocmd("ColorScheme", {
+				callback = function() end,
+			})
+		end,
+	},
+}
 
 -- return {
 --   {
@@ -26,20 +20,6 @@
 --     end,
 --   },
 -- }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 -- return {
 --   {
@@ -112,28 +92,6 @@
 --   },
 -- }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 -- return {
 --   {
 --     "rebelot/kanagawa.nvim",
@@ -161,24 +119,6 @@
 --   },
 -- }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 -- return {
 --   {
 --     "shaunsingh/nord.nvim",
@@ -186,7 +126,7 @@
 --     config = function()
 --       vim.g.nord_contrast = true
 --       vim.g.nord_borders = false
---       vim.g.nord_disable_background = true 
+--       vim.g.nord_disable_background = true
 --       vim.g.nord_italic = true
 --       vim.g.nord_uniform_diff_background = true
 --       vim.g.nord_bold = true

@@ -214,7 +214,7 @@ binds {
 
 
     // Suggested binds for running programs: terminal, app launcher, screen locker.
-    Mod+Return hotkey-overlay-title="Open a Terminal: alacritty" { spawn "kitty"; }
+    Mod+Return hotkey-overlay-title="Open a Terminal: alacritty" { spawn "foot"; }
     Mod+Space hotkey-overlay-title="Run an Application: fuzzel" { spawn "rofi" "-show" "drun"; }
     Super+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
 

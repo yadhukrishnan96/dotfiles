@@ -11,20 +11,14 @@ vim.opt.cmdheight = 0
 --for mardown notes--
 vim.opt.conceallevel = 2
 
-vim.opt.foldmethod = "expr"
-vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
-vim.opt.foldlevel = 99
-
---Yank highlight--
-
 vim.api.nvim_create_autocmd("TextYankPost", {
-  desc = "Highlight when yanking text",
-  callback = function()
-    vim.highlight.on_yank({
-      higroup = "Visual",
-      timeout = 160,
-    })
-  end,
+	desc = "Highlight when yanking text",
+	callback = function()
+		vim.highlight.on_yank({
+			higroup = "Visual",
+			timeout = 160,
+		})
+	end,
 })
 
 --move line up or down --
@@ -34,29 +28,24 @@ vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
 
 --paster behavior for pasting multiple lines
 vim.keymap.set("n", "p", function()
-  local text = vim.fn.getreg("+")
+	local text = vim.fn.getreg("+")
 
-  if text:find("\n") then
-    vim.cmd("put +")
-  else
-    vim.cmd('normal! "+p')
-  end
+	if text:find("\n") then
+		vim.cmd("put +")
+	else
+		vim.cmd('normal! "+p')
+	end
 end, { noremap = true, silent = true })
-
 
 --“paste without overwriting yank register--
 
-
---indentation 
+--indentation
 vim.keymap.set("v", "<", "<gv^")
 vim.keymap.set("v", ">", ">gv^")
 
-
-
 vim.diagnostic.config({
-  signs = false,
+	signs = false,
 })
-
 
 vim.opt.clipboard = "unnamedplus"
 -- =========================
@@ -68,9 +57,9 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 
 -- Indentation
-vim.opt.tabstop = 2        -- tabs = 4 spaces
-vim.opt.shiftwidth = 2     -- autoindent size
-vim.opt.expandtab = true   -- use spaces instead of tabs
+vim.opt.tabstop = 2 -- tabs = 4 spaces
+vim.opt.shiftwidth = 2 -- autoindent size
+vim.opt.expandtab = true -- use spaces instead of tabs
 vim.opt.smartindent = true
 -- Cursor line highlight
 vim.opt.cursorline = true
@@ -95,13 +84,11 @@ vim.opt.updatetime = 300
 -- KEYBINDS
 -- =========================
 
-
 vim.keymap.set("n", "XX", ":qa!<CR>", {
-  noremap = true,
-  silent = true,
-  desc = "Force quit without saving"
+	noremap = true,
+	silent = true,
+	desc = "Force quit without saving",
 })
-
 
 -- Set leader key (space)
 vim.g.mapleader = " "
@@ -117,7 +104,6 @@ vim.keymap.set("n", "<leader>q", ":q<CR>")
 
 -- Clear search highlight
 vim.keymap.set("n", "<leader>h", ":nohlsearch<CR>")
-
 
 --keep cursor at centre while ctrl d/u --
 
@@ -144,7 +130,6 @@ vim.opt.undofile = true
 -- DONE
 -- =========================
 --
-
 
 -- local function fade_hex(hex, factor)
 --   hex = hex:gsub("#", "")
