@@ -1,5 +1,12 @@
 require("config.lazy")
 
+vim.opt.spell = false
+
+vim.diagnostic.config({
+	signs = false,
+	underline = false,
+})
+
 vim.opt.wrap = false
 
 vim.opt.inccommand = "split"
@@ -10,6 +17,7 @@ vim.opt.cmdheight = 0
 
 --for mardown notes--
 vim.opt.conceallevel = 2
+--Yank highlight--
 
 vim.api.nvim_create_autocmd("TextYankPost", {
 	desc = "Highlight when yanking text",
@@ -122,14 +130,32 @@ vim.opt.splitright = true
 vim.opt.splitbelow = true
 
 -- Disable swapfile
-vim.opt.swapfile = false
+vim.opt.swapfile = true
 vim.opt.backup = false
 
 vim.opt.undofile = true
 -- =========================
 -- DONE
 -- =========================
---
+
+-- Markdown files headig turnoff
+vim.api.nvim_set_hl(0, "@markup.heading.2.markdown", {
+	fg = "#b4befe",
+	bold = true,
+	italic = true,
+})
+--- Turn off spell check for md file
+
+-- vim.api.nvim_create_autocmd("FileType", {
+-- 	pattern = "markdown",
+-- 	callback = function(args)
+-- 		vim.schedule(function()
+-- 			vim.api.nvim_set_option_value("spell", false, {
+-- 				win = vim.fn.bufwinid(args.buf),
+-- 			})
+-- 		end)
+-- 	end,
+-- })
 
 -- local function fade_hex(hex, factor)
 --   hex = hex:gsub("#", "")

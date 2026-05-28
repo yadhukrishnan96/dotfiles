@@ -9,15 +9,34 @@
 // }
 
 
+// blur {
+//     passes 1
+//     offset 3.0
+//     noise 0.02
+//     saturation 1.5
+// }
+
 blur {
-    passes 1
-    offset 3.0
+    passes 2
+    offset 6.0
     noise 0.02
-    saturation 1.5
+    saturation 1.1
+}
+
+ 
+window-rule {
+    match app-id="^alacritty$"
+    
+    background-effect {
+        blur true
+        // Optional: set "xray false" if you want to blur active windows underneath 
+        // instead of just blurring down to the wallpaper (xray true is more performant).
+        xray false 
+    }
 }
 
 
- 
+
 
 window-rule {
     match app-id="^kitty$"
@@ -214,7 +233,7 @@ binds {
 
 
     // Suggested binds for running programs: terminal, app launcher, screen locker.
-    Mod+Return hotkey-overlay-title="Open a Terminal: alacritty" { spawn "foot"; }
+    Mod+Return hotkey-overlay-title="Open a Terminal: alacritty" { spawn ""; }
     Mod+Space hotkey-overlay-title="Run an Application: fuzzel" { spawn "rofi" "-show" "drun"; }
     Super+Alt+L hotkey-overlay-title="Lock the Screen: swaylock" { spawn "swaylock"; }
 

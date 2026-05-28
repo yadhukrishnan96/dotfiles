@@ -2,10 +2,14 @@ return {
 	{
 		"LazyVim/LazyVim",
 		opts = function(_, opts)
-			opts.colorscheme = "custom"
+			opts.colorscheme = "tokyonight-night"
 
 			vim.api.nvim_create_autocmd("ColorScheme", {
-				callback = function() end,
+				callback = function()
+					vim.api.nvim_set_hl(0, "WinSeparator", {
+						fg = "#6c7086",
+					})
+				end,
 			})
 		end,
 	},
